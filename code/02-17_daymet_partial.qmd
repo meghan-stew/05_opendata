@@ -135,9 +135,15 @@ Let's try it with the first site-year on the data frame.
 
 # Daymet - one site-year  
 ```{r one site-year}
-field
+field 
 
-daymet_one 
+daymet_one <- download_daymet(site = field$site[1],
+                              lat = field$lat[1],
+                              lon =  field$lon[1],
+                              start = field$year[1],
+                              end = field$year[1],
+                              simplify = T
+                              )
 
 daymet_one
 ```
@@ -145,7 +151,10 @@ daymet_one
 How many rows above? Why?  
 
 ```{r}
-daymet_one 
+daymet_one %>%
+  pivot_wider(names_from = measurement,
+              values_from = value
+              )
 ```
 How many rows above? Why?  
 
@@ -159,7 +168,29 @@ For that, let's use the **map()** family of functions from the purrr package.
 **WARNING**: the chunk below took about **3 minutes** to run on my laptop.  
 
 ```{r}
-daymet_all 
+daymet_all <- field %>%
+  mutate(weather = pmap(list(.y = year,
+                             .site = site,
+                             .lat = lat,
+                             .lon = lon
+                             ),
+                        function(.y, .site, .lat, .lon)
+                          download_daymet(
+                            site = .site,
+                            lat = .lat,
+                            lon = .lon, 
+                            start = .y,
+                            end = .y,
+                            simplify = T,
+                            silent = T
+                          ) %>%
+                          rename(.year = year,
+                                .site = site
+                          )
+                          
+                        ))
+
+daymet_all
 
 ```
 
