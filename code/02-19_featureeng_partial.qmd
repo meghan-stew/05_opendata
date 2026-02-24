@@ -158,7 +158,7 @@ Let's check tmax.c and prcp.mm for the first site-year and month.
 fe_month %>%
   filter(year == 1980 & 
            site == "Altus, OK" &
-           month_abb == "Jan") %>%
+           month.abb == "Jan") %>%
   summarise(tmax.c = mean(tmax.c),
             prcp.mm = sum(prcp.mm))
 ```
@@ -166,9 +166,17 @@ fe_month %>%
 Now, what if we wanted to have month as part of the column name instead?  
 
 ```{r fe_month_sum_wide}
-fe_month_sum_wide 
+fe_month_sum_wide <- fe_month_sum %>%
+  pivot_longer(mean_dayl.s:sum_prcp.mm)%>%
+  mutate(varname = paste0(name,"_", month.abb)) %>%
+  dplyr::select(-name, -month.abb) %>%
+  pivot_wider(names_from = varname, 
+              values_from = value)%>%
   # Rounding to one decimal point
-
+mutate(across(c(3:75),~round(., 1)
+              ))
+  
+  
 fe_month_sum_wide  
 ```
 Notice how we are back at **698** rows.  
@@ -184,13 +192,50 @@ Let's make a ridge plot to visualize the distribution of one variable over month
 #install.packages("ggridges")
 library(ggridges)
 
+ggplot(data = fe_month_sum,
+       aes(y = month.abb,
+           x = mean_tmax.c,
+           fill = stat(x)
+           )
+       )+
+  geom_density_ridges_gradient(scale = 3,
+                               rel_min_height = 0.01) + 
+  scale_fill_viridis_c(option = "C", alpha = 0.6) +
+  theme(legend.position = "none") + 
+  labs(x = "monthly average temperature",
+       y = "Month")
+
+
 
 ```
 
 Now let's do that for all variables.  
 ```{r}
-finalplots 
+finalplots <- fe_month_sum %>%
+  pivot_longer(mean_dayl.s:sum_prcp.mm) %>%
+  group_by(name) %>%
+  nest() %>%
+  mutate(plot = map2(data, name, 
+                     ~ggplot(data = .x,
+       aes(y = month.abb,
+           x = value,
+           fill = stat(x)
+           )
+       )+
+  geom_density_ridges_gradient(scale = 3,
+                               rel_min_height = 0.01) + 
+  scale_fill_viridis_c(option = "C", alpha = 0.6) +
+  theme(legend.position = "none") + 
+  labs(x = .y,
+       y = "Month")
+
+
+
+                     ))
+
+
   
+finalplots$plot
   
 ```
 
