@@ -77,9 +77,18 @@ nutella <- new_nuts[["results"]] %>%
 nutella
 ```
 ```{r unnesting nutella the right way}
+nutella1 <- nutella %>%
+  unnest_longer(outcomes, values_to = "outcomes") %>%
+  unnest_longer(reactions, values_to = "reactions")
+  
 
+nutella1
+```
+```{r}
+nutella2 <- nutella1 %>%
+  unnest_wider(products, names_sep = "_" )
 
-
+nutella2
 ```
 
 
