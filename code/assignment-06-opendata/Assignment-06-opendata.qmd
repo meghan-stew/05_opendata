@@ -10,25 +10,28 @@ format:
     theme: cerulean
 ---
 
-# Goal of this assignment  
-The goal of this assignment is for you to leverage open data APIs in R related to your field of study.  
+# Goal of this assignment
 
-In specific, you will be asked to:  
-  - Identify an open data base related to your field of study  
-  - Retrieve data from it into R (bonus points if through an API instead of manually)  
-  - Create questions one could ask of these data, and answer them with wrangling, tables, and plots  
+The goal of this assignment is for you to leverage open data APIs in R related to your field of study.
 
-# Instructions  
-1. Identify an open data in relation to your field of study. The minimum requirements for these data are:  
-  - It needs to be open (i.e., public data that anyone can access)  
-  - It needs to report some variable of importance across time (e.g., multiple days, months, years, etc.) and/or space (e.g., cities, counties, states, countries, etc.), ideally both.  
-  
-2. Bring these data into R, bonus points if you use an API for that (instead of manually)  
+In specific, you will be asked to:\
+- Identify an open data base related to your field of study\
+- Retrieve data from it into R (bonus points if through an API instead of manually)\
+- Create questions one could ask of these data, and answer them with wrangling, tables, and plots
 
-3. Create 6 questions you can ask of these data. Of these questions:  
-  - At least 4 should require some wrangling to be answered (like a group_by and summarise, etc.)  
-  - At least 3 should be answered with a graph  
+# Instructions
 
+1.  Identify an open data in relation to your field of study. The minimum requirements for these data are:\
+
+-   It needs to be open (i.e., public data that anyone can access)\
+-   It needs to report some variable of importance across time (e.g., multiple days, months, years, etc.) and/or space (e.g., cities, counties, states, countries, etc.), ideally both.
+
+2.  Bring these data into R, bonus points if you use an API for that (instead of manually)
+
+3.  Create 6 questions you can ask of these data. Of these questions:\
+
+-   At least 4 should require some wrangling to be answered (like a group_by and summarise, etc.)\
+-   At least 3 should be answered with a graph
 
 ```{r FDA API library Chunk}
 library(jsonlite)
@@ -40,19 +43,17 @@ library(purrr)
 
 ```
 
+# Questions
 
-# Questions  
-## 1. What is your field of study?  
+## 1. What is your field of study?
 
 **Food Science & Technology**
 
-## 2. What is the open data you identified? Please explain it in terms of its source (website, which agency reported it), variable of importance, temporal and spatial characteristics, and anything else relevant for someone outside of your field of study to fully understand what it represents.  
+## 2. What is the open data you identified? Please explain it in terms of its source (website, which agency reported it), variable of importance, temporal and spatial characteristics, and anything else relevant for someone outside of your field of study to fully understand what it represents.
 
+***The open data source identified is from the FDA and is a collection of reported advrese events from food products in the U.S. The particular dataset pulled includes variables of importance such as product involved, product industry and affiliated codes, adverse symptoms reported, and overall outcomes based on severity. The temporal characteristics include report year with spacial characeteristics summarized for the entire U.S. The product's role details whether it is generally suspect in the adverse events or if contamination was involved.See link to datasite here : https://open.fda.gov/apis/download-api-fields/***
 
-***The open data source identified is from the FDA and is a collection of reported advrese events from food products in the U.S. The particular dataset pulled includes variables of importance such as product involved, product industry and affiliated codes, adverse symptoms reported, and overall outcomes based on severity. The temporal characteristics include report year with spacial characeteristics summarized for the entire U.S. The product's role details whether it is generally suspect in the adverse events or if contamination was involved.See link to datasite here : https://open.fda.gov/apis/download-api-fields/  ***
-
-
-## 3.  The FDA's adverse event site reports adverse events for different industries. Summarize into a dataset adverse events for a **sample of 100 reports** by year from 2004-2023 for the Nut product industry by wrangling needed data columns including important information such as adverse events, product name, industry name and code, product's role in adverse event, and observed reactions. 
+## 3. The FDA's adverse event site reports adverse events for different industries. Summarize into a dataset adverse events for a **sample of 100 reports** by year from 2004-2023 for the Nut product industry by wrangling needed data columns including important information such as adverse events, product name, industry name and code, product's role in adverse event, and observed reactions.
 
 *Hint: The industry code is 23 and you will need to use the function "GET()" to pull the right API dataset.*
 
@@ -62,13 +63,13 @@ events <- GET("https://api.fda.gov/food/event.json?search=date_started:[20040101
 
 
 ```
+
 ```{r API for adverse events from edible nuts}
 nuts <- GET("https://api.fda.gov/food/event.json?search=products.industry_code:23&limit=100")
 
 summary(nuts)
 
 ```
-
 
 ```{r converting data into character vector from JSON format}
 #| warning: false
@@ -87,6 +88,7 @@ nutella <- new_nuts[["results"]] %>%
 
 nutella
 ```
+
 ```{r unnesting nutella the right way}
 nutella1 <- nutella %>%
   unnest_longer(outcomes, values_to = "outcomes") %>%
@@ -95,6 +97,7 @@ nutella1 <- nutella %>%
 
 nutella1
 ```
+
 ```{r}
 #| warning: false
 nutella2 <- nutella1 %>%
@@ -103,11 +106,7 @@ nutella2 <- nutella1 %>%
 nutella2
 ```
 
-
-
-
-
-## 4.  How many adverse events for nut products were reported each year between the years of 2004-2023? Summarize findings in a bar chart showing total events per year. 
+## 4. How many adverse events for nut products were reported each year between the years of 2004-2023? Summarize findings in a bar chart showing total events per year.
 
 ```{r year summary}
 #| warning: false
@@ -122,6 +121,7 @@ nutella_year2
 
 
 ```
+
 ```{r plotting bar chart for total events}
 #| warning: false
 
@@ -142,8 +142,8 @@ ggplot(year_nutsum, aes(x = factor(year), y = total_events)) +
 
 ```
 
+## 5. What products were involved in each year's total adverse events? Summarize results in a bar chart for each year showing total adverse events for each product involved in that given year.
 
-## 5.  What products were involved in each year's total adverse events? Summarize results in a bar chart for each year  showing total adverse events for each product involved in that given year. 
 *Hint: use a mapping function to change the plot name by year for data used in it.*
 
 ```{r product year summary }
@@ -161,6 +161,7 @@ product_events <- product_events %>%
 product_events
 
 ```
+
 ```{r plot product events, use mapping to change year plot name }
 year_of_nutella <- sort(unique(product_events$year))
 
@@ -186,47 +187,83 @@ nut_plots
 #omg it actually worked
 ```
 
-
-
-## 6.  For each product associated with adverse events, summarize in a bar plot the total number of outcomes for each outcome type reported. *Hint: you will need to set up y-axis to have total number of outcome reports, with bars for each product grouped on x-axis by outcome type. 
+## 6. For each nut product associated with adverse events, summarize in a bar plot the total number of outcomes for each outcome type reported. \*Hint: you will need to set up y-axis to have total number of outcome reports, with bars for each product on x-axis by outcome type.
 
 ```{r creating data frame for outcomes and character type product name}
 
-product_outcome <- 
+product_outcome <- nutella_year2 %>%
+  mutate(products_name_brand = sapply(products_name_brand, function(x) paste(x, collapse = "_" ))) %>%
+  count(products_name_brand, outcomes, name = "Net_outcomes")
 
-
+product_outcome
 
 ```
 
+```{r making one nice bar chart for outcomes}
+#adding below mod because of issues rendering plots
+#| fig.width: 10
+#| fig.height: 8
+#will use split() function here instead of filter() like previously to split dataframe based on grouping variable "outcome". Then I'll try to use mapping like I did before. 
 
+outcome_plots <- split(product_outcome, product_outcome$outcomes)
+outcome_plots
 
-## 7.  
+```
 
-## 8.  
-
-
-# Submitting your work  
-Once you have developed all the code and answers, make sure to Render this quarto file.  
-
-**Notes on rendering**:  
-
-- Make sure to render your work and inspect how the final html look like.  
-- If it does not look professional for whatever reason, then fix the issue, re-render it, recheck.  
-- Only send me your work once your html file looks professional.  
-  - **DO NOT** delete the file's heading levels (# and ##). They set up the proper heading 1 and 2 levels, and I use them to guide my grading.  
-  - If a given chunk is also outputting warnings or messages, inhibit this behavior by changing the chunk options `message` and `warning` to `FALSE` (I'll demo this in a moment).  
+```{r mapping over split up data frames for plots}
+# note for meghan: .x in function() below is a placeholder for each data frame that was split by outcome in previous chunk. 
+#| fig.width: 20
+#| fig.height: 15
+nut_plot3 <- map(
+  outcome_plots, 
+  function(.x) {nut_outcome <- unique(.x$outcomes)
+  ggplot(.x, aes(x = products_name_brand, 
+                y = Net_outcomes)) +
+    geom_col(fill = "purple") + 
+    #had to add bottom part because titles kept being cut off in test plots 
+   # coord_flip(clip = "off") + 
+    #above didn't work so I just turned the flip off. 
+    labs( title = paste("Products Associated with Certain Adverse Outcomes:", nut_outcome),
+          x = "Product Name",
+          y = "Total Outcome Events") + 
+    theme_bw() +
+    theme(
+      axis.text.y = element_text(size = 5),
+      #axis.text.x = element_text(angle = 90, hjust = 1),
+      plot.margin = margin(t = 80, r = 80, b = 20, l = 20))
   
-  - If, after rendered, 2 lines of text are connected and you wish to "break line" between them, add 2 extra spaces after the first one (I'lld demo this in a moment).  
+  }
+)
 
-After rendering, an .html file will be created on your `code` folder.  
+nut_plot3
 
-Rename this file to `Assignment-06-opendata-LASTNAME.html`.    
+```
+***I tried several times to fit the plots above into a correct window size but as you can see from my code chunkI had to deactivate the x-axis label tilt because it made it worse. I may need help troubleshooting this. ***
+
+
+## 7.
+
+## 8.
+
+# Submitting your work
+
+Once you have developed all the code and answers, make sure to Render this quarto file.
+
+**Notes on rendering**:
+
+-   Make sure to render your work and inspect how the final html look like.\
+-   If it does not look professional for whatever reason, then fix the issue, re-render it, recheck.\
+-   Only send me your work once your html file looks professional.
+    -   **DO NOT** delete the file's heading levels (# and ##). They set up the proper heading 1 and 2 levels, and I use them to guide my grading.\
+
+    -   If a given chunk is also outputting warnings or messages, inhibit this behavior by changing the chunk options `message` and `warning` to `FALSE` (I'll demo this in a moment).
+
+    -   If, after rendered, 2 lines of text are connected and you wish to "break line" between them, add 2 extra spaces after the first one (I'lld demo this in a moment).
+
+After rendering, an .html file will be created on your `code` folder.
+
+Rename this file to `Assignment-06-opendata-LASTNAME.html`.
 
 For ex., mine would be `Assignment-06-opendata-Bastos.html`.
 
-Submit your work by uploading the **html** file to **eLC Assignment #6 - open data** by Monday March 16 11:59 pm.  
-  
-
-
-
-
+Submit your work by uploading the **html** file to **eLC Assignment #6 - open data** by Monday March 16 11:59 pm.
