@@ -36,10 +36,28 @@ library(httr)
 library(ggplot2)
 library(tidyverse)
 library(dplyr)
+library(purrr)
 
 ```
 
+
+# Questions  
+## 1. What is your field of study?  
+
+**Food Science & Technology**
+
+## 2. What is the open data you identified? Please explain it in terms of its source (website, which agency reported it), variable of importance, temporal and spatial characteristics, and anything else relevant for someone outside of your field of study to fully understand what it represents.  
+
+
+***The open data source identified is from the FDA and is a collection of reported advrese events from food products in the U.S. The particular dataset pulled includes variables of importance such as product involved, product industry and affiliated codes, adverse symptoms reported, and overall outcomes based on severity. The temporal characteristics include report year with spacial characeteristics summarized for the entire U.S. The product's role details whether it is generally suspect in the adverse events or if contamination was involved.See link to datasite here : https://open.fda.gov/apis/download-api-fields/  ***
+
+
+## 3.  The FDA's adverse event site reports adverse events for different industries. Summarize into a dataset adverse events for a **sample of 100 reports** by year from 2004-2023 for the Nut product industry by wrangling needed data columns including important information such as adverse events, product name, industry name and code, product's role in adverse event, and observed reactions. 
+
+*Hint: The industry code is 23 and you will need to use the function "GET()" to pull the right API dataset.*
+
 ```{r FDA API link}
+#| warning: false
 events <- GET("https://api.fda.gov/food/event.json?search=date_started:[20040101+TO+20230101]") 
 
 
@@ -50,13 +68,10 @@ nuts <- GET("https://api.fda.gov/food/event.json?search=products.industry_code:2
 summary(nuts)
 
 ```
-```{r query for all reports involving nuts or seeds for adverse events}
-nut_all <- GET("https://api.fda.gov/food/event.json?search=products.industry_code:23&count=date_created")
 
-nut_all
-```
 
-```{r converting data into character vector from JSON format }
+```{r converting data into character vector from JSON format}
+#| warning: false
 new_nuts <- fromJSON(rawToChar(nuts$content))
 
 new_nuts
@@ -64,12 +79,8 @@ new_nuts
 
 ```
 
-```{r}
-#nuts_unnest <- new_nuts %>%
-#  unnest(products)
-
-#nuts_unnest
-#will figure that out later lol. 
+```{r unnested nutella}
+#| warning: false
 
 nutella <- new_nuts[["results"]] %>%
   select(date_created, outcomes, reactions, products)
@@ -85,6 +96,7 @@ nutella1 <- nutella %>%
 nutella1
 ```
 ```{r}
+#| warning: false
 nutella2 <- nutella1 %>%
   unnest_wider(products, names_sep = "_" )
 
@@ -93,22 +105,100 @@ nutella2
 
 
 
-# Questions  
-## 1. What is your field of study?  
-
-**Food Science & Technology**
-
-## 2. What is the open data you identified? Please explain it in terms of its source (website, which agency reported it), variable of importance, temporal and spatial characteristics, and anything else relevant for someone outside of your field of study to fully understand what it represents.  
 
 
+## 4.  How many adverse events for nut products were reported each year between the years of 2004-2023? Summarize findings in a bar chart showing total events per year. 
 
-## 3.  
+```{r year summary}
+#| warning: false
+nutella_year <- nutella2 %>%
+  separate(date_created, into = c("year", "month_day"), sep = 4)
+#nutella_year
 
-## 4.  
+nutella_year2 <- nutella_year %>%
+  separate(month_day, into = c("month", "day"), sep = 2)
 
-## 5.  
+nutella_year2
 
-## 6.  
+
+```
+```{r plotting bar chart for total events}
+#| warning: false
+
+year_nutsum <- nutella_year2 %>%
+  group_by(year) %>%
+count(year, name = "total_events")
+
+year_nutsum
+
+ggplot(year_nutsum, aes(x = factor(year), y = total_events)) + 
+  geom_col(fill = "forestgreen") + 
+  labs(title = "Adverse Events for Nut Products in U.S. by Year",
+       x = "Year",
+       y = "Total Adverse Events"
+       ) + 
+  theme_bw()
+
+
+```
+
+
+## 5.  What products were involved in each year's total adverse events? Summarize results in a bar chart for each year  showing total adverse events for each product involved in that given year. 
+*Hint: use a mapping function to change the plot name by year for data used in it.*
+
+```{r product year summary }
+product_events <- nutella_year2 %>%
+  count(year, products_name_brand, name = "Events_by_Product")
+
+product_events$products_name_brand[[1]]
+length(product_events$products_name_brand[[1]])
+
+#so trying to run below chunk for mapping didn't work with this column being the character type it is so I have to convert it below. It's a list so maybe I can apply a functoin that works over a list like lapply or sapply : use paste() for joiing list elements to create one name for each row and then adding a "_" to join names separated originally in the list. 
+
+product_events <- product_events %>%
+  mutate(products_name_brand = sapply(products_name_brand, function(x) paste(x, collapse = "_" )))
+
+product_events
+
+```
+```{r plot product events, use mapping to change year plot name }
+year_of_nutella <- sort(unique(product_events$year))
+
+
+nut_plots <- map(year_of_nutella, ~ {nutty_year <- product_events %>% filter(year == .x)
+
+ggplot(nutty_year, aes(x = products_name_brand, y = Events_by_Product, fill = products_name_brand)) + 
+  geom_col() +
+  labs(title = paste("Adverse Events By Nut Product ", .x),
+       x = "Nut Product", 
+       y = "Total Adverse Events") +
+  theme_bw() +
+  #adding next line because when I previewed plots you the x-axis labels were overlapping too much to read: 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+})
+
+names(nut_plots) <- year_of_nutella
+
+
+nut_plots
+
+#omg it actually worked
+```
+
+
+
+## 6.  For each product associated with adverse events, summarize in a bar plot the total number of outcomes for each outcome type reported. *Hint: you will need to set up y-axis to have total number of outcome reports, with bars for each product grouped on x-axis by outcome type. 
+
+```{r creating data frame for outcomes and character type product name}
+
+product_outcome <- 
+
+
+
+```
+
+
 
 ## 7.  
 
