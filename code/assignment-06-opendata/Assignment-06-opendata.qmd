@@ -273,6 +273,18 @@ ggplot(provider_1, aes(x = reorder(as.factor(year), Provider_visits), y = Provid
 
 ## 8. Which product had the most adverse events of all time? How many adverse events were associated with this product? 
 
+```{r max adverse events}
+#let me use the dataset i made earlier already listing the total number of adverse events per product
+product_events
+
+worst_product <- product_events %>%
+filter(Events_by_Product == max(Events_by_Product, na.rm = TRUE)) %>%
+  pull(products_name_brand, Events_by_Product)
+
+worst_product
+```
+***The product with the most adverse events within the nut product industry was JIF Peanut Butter with 28 reported events between 2004-2023. ***
+
 # Submitting your work
 
 Once you have developed all the code and answers, make sure to Render this quarto file.
