@@ -34,6 +34,7 @@ In specific, you will be asked to:\
 -   At least 3 should be answered with a graph
 
 ```{r FDA API library Chunk}
+#| warning: false
 library(jsonlite)
 library(httr)
 library(ggplot2)
@@ -51,9 +52,9 @@ library(purrr)
 
 ## 2. What is the open data you identified? Please explain it in terms of its source (website, which agency reported it), variable of importance, temporal and spatial characteristics, and anything else relevant for someone outside of your field of study to fully understand what it represents.
 
-***The open data source identified is from the FDA and is a collection of reported advrese events from food products in the U.S. The particular dataset pulled includes variables of importance such as product involved, product industry and affiliated codes, adverse symptoms reported, and overall outcomes based on severity. The temporal characteristics include report year with spacial characeteristics summarized for the entire U.S. The product's role details whether it is generally suspect in the adverse events or if contamination was involved.See link to datasite here : https://open.fda.gov/apis/download-api-fields/***
+***The open data source identified is from the FDA and is a collection of reported adverse events from food products in the U.S. The particular dataset pulled includes variables of importance such as product involved, product industry and affiliated codes, adverse symptoms reported, and overall outcomes based on severity. The temporal characteristics include report year with spacial characteristics summarized for the entire U.S. The product's role details whether it is generally suspect in the adverse events or if contamination was involved.See link to datasite here : https://open.fda.gov/apis/download-api-fields/***
 
-## 3. The FDA's adverse event site reports adverse events for different industries. Summarize into a dataset adverse events for a **sample of 100 reports** by year from 2004-2023 for the Nut product industry by wrangling needed data columns including important information such as adverse events, product name, industry name and code, product's role in adverse event, and observed reactions.
+## 3. The FDA's adverse event site reports adverse events for different industries. Summarize into a dataset adverse events for a **sample of 100 reports** by year from 2004-2023 for the Nut product industry. Perform some wrangling of needed data columns including important information such as adverse events, product name, industry name and code, product's role in adverse event, and observed reactions.
 
 *Hint: The industry code is 23 and you will need to use the function "GET()" to pull the right API dataset.*
 
@@ -65,6 +66,7 @@ events <- GET("https://api.fda.gov/food/event.json?search=date_started:[20040101
 ```
 
 ```{r API for adverse events from edible nuts}
+#| warning: false
 nuts <- GET("https://api.fda.gov/food/event.json?search=products.industry_code:23&limit=100")
 
 summary(nuts)
@@ -75,8 +77,7 @@ summary(nuts)
 #| warning: false
 new_nuts <- fromJSON(rawToChar(nuts$content))
 
-new_nuts
-
+#head(new_nuts)
 
 ```
 
@@ -86,7 +87,7 @@ new_nuts
 nutella <- new_nuts[["results"]] %>%
   select(date_created, outcomes, reactions, products)
 
-nutella
+#head(nutella)
 ```
 
 ```{r unnesting nutella the right way}
@@ -95,7 +96,7 @@ nutella1 <- nutella %>%
   unnest_longer(reactions, values_to = "reactions")
   
 
-nutella1
+#head(nutella1)
 ```
 
 ```{r}
@@ -103,7 +104,7 @@ nutella1
 nutella2 <- nutella1 %>%
   unnest_wider(products, names_sep = "_" )
 
-nutella2
+head(nutella2)
 ```
 
 ## 4. How many adverse events for nut products were reported each year between the years of 2004-2023? Summarize findings in a bar chart showing total events per year.
@@ -117,7 +118,7 @@ nutella_year <- nutella2 %>%
 nutella_year2 <- nutella_year %>%
   separate(month_day, into = c("month", "day"), sep = 2)
 
-nutella_year2
+glimpse(nutella_year2)
 
 
 ```
@@ -142,7 +143,7 @@ ggplot(year_nutsum, aes(x = factor(year), y = total_events)) +
 
 ```
 
-## 5. What products were involved in each year's total adverse events? Summarize results in a bar chart for each year showing total adverse events for each product involved in that given year.
+## 5. What products were involved in each year's total adverse events? Summarize results in a bar chart for each year showing total adverse events for each product involved in that given year. Show just one plot for 2010 for total adverse events .
 
 *Hint: use a mapping function to change the plot name by year for data used in it.*
 
@@ -190,7 +191,8 @@ nut_plots$`2010`
 #omg it actually worked
 ```
 
-## 6. For each nut product associated with adverse events, summarize in a bar plot the total number of outcomes for each outcome type reported. \*Hint: you will need to set up y-axis to have total number of outcome reports, with bars for each product on x-axis by outcome type.
+## 6. For each nut product associated with adverse events, summarize in a bar plot the total number of outcomes for each outcome type reported. What products resulted in hospitalization? 
+*Hint: you will need to set up y-axis to have total number of outcome reports, with bars for each product on x-axis by outcome type.*
 
 ```{r creating data frame for outcomes and character type product name}
 #| warning: false
@@ -232,16 +234,16 @@ nut_plot3 <- map(
     theme_bw() +
     theme(
       axis.text.y = element_text(size = 5),
-      #axis.text.x = element_text(angle = 90, hjust = 1),
+      axis.text.x = element_text(angle = 76, hjust = 1),
       plot.margin = margin(t = 80, r = 80, b = 20, l = 20))
   
   }
 )
 
-nut_plot3
+nut_plot3$Hospitalization
 
 ```
-***I tried several times to fit the plots above into a correct window size but as you can see from my code chunk I had to deactivate the x-axis label tilt because it made it worse. I may need help troubleshooting this. ***
+***I tried several times to fit the plots above into a correct window size but as you can see I may need help troubleshooting this. ***
 
 
 ## 7. Show using a plot the highest to lowest years for "Visited a healthcare provider" outcomes for nut products from the 2004-2023 dataset. 
