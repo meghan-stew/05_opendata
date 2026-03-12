@@ -146,14 +146,15 @@ ggplot(year_nutsum, aes(x = factor(year), y = total_events)) +
 
 *Hint: use a mapping function to change the plot name by year for data used in it.*
 
-```{r product year summary }
+```{r product year summary}
+#| warning: false
 product_events <- nutella_year2 %>%
   count(year, products_name_brand, name = "Events_by_Product")
 
 product_events$products_name_brand[[1]]
 length(product_events$products_name_brand[[1]])
 
-#so trying to run below chunk for mapping didn't work with this column being the character type it is so I have to convert it below. It's a list so maybe I can apply a functoin that works over a list like lapply or sapply : use paste() for joiing list elements to create one name for each row and then adding a "_" to join names separated originally in the list. 
+#so trying to run below chunk for mapping didn't work with this column being the character type it is so I have to convert it below. It's a list so maybe I can apply a functoin that works over a list like lapply or sapply : use paste() for joining list elements to create one name for each row and then adding a "_" to join names separated originally in the list. 
 
 product_events <- product_events %>%
   mutate(products_name_brand = sapply(products_name_brand, function(x) paste(x, collapse = "_" )))
@@ -162,7 +163,8 @@ product_events
 
 ```
 
-```{r plot product events, use mapping to change year plot name }
+```{r plot product events, use mapping to change year plot name}
+#| warning: false
 year_of_nutella <- sort(unique(product_events$year))
 
 
@@ -175,14 +177,15 @@ ggplot(nutty_year, aes(x = products_name_brand, y = Events_by_Product, fill = pr
        y = "Total Adverse Events") +
   theme_bw() +
   #adding next line because when I previewed plots you the x-axis labels were overlapping too much to read: 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "none")
 
 })
 
 names(nut_plots) <- year_of_nutella
 
 
-nut_plots
+nut_plots$`2010`
 
 #omg it actually worked
 ```
@@ -190,6 +193,7 @@ nut_plots
 ## 6. For each nut product associated with adverse events, summarize in a bar plot the total number of outcomes for each outcome type reported. \*Hint: you will need to set up y-axis to have total number of outcome reports, with bars for each product on x-axis by outcome type.
 
 ```{r creating data frame for outcomes and character type product name}
+#| warning: false
 
 product_outcome <- nutella_year2 %>%
   mutate(products_name_brand = sapply(products_name_brand, function(x) paste(x, collapse = "_" ))) %>%
@@ -200,9 +204,9 @@ product_outcome
 ```
 
 ```{r making one nice bar chart for outcomes}
+#| warning: false
 #adding below mod because of issues rendering plots
-#| fig.width: 10
-#| fig.height: 8
+
 #will use split() function here instead of filter() like previously to split dataframe based on grouping variable "outcome". Then I'll try to use mapping like I did before. 
 
 outcome_plots <- split(product_outcome, product_outcome$outcomes)
@@ -212,8 +216,7 @@ outcome_plots
 
 ```{r mapping over split up data frames for plots}
 # note for meghan: .x in function() below is a placeholder for each data frame that was split by outcome in previous chunk. 
-#| fig.width: 20
-#| fig.height: 15
+
 nut_plot3 <- map(
   outcome_plots, 
   function(.x) {nut_outcome <- unique(.x$outcomes)
@@ -238,12 +241,37 @@ nut_plot3 <- map(
 nut_plot3
 
 ```
-***I tried several times to fit the plots above into a correct window size but as you can see from my code chunkI had to deactivate the x-axis label tilt because it made it worse. I may need help troubleshooting this. ***
+***I tried several times to fit the plots above into a correct window size but as you can see from my code chunk I had to deactivate the x-axis label tilt because it made it worse. I may need help troubleshooting this. ***
 
 
-## 7.
+## 7. Show using a plot the highest to lowest years for "Visited a healthcare provider" outcomes for nut products from the 2004-2023 dataset. 
 
-## 8.
+```{r filter some outcomes}
+
+provider_1 <- nutella_year2 %>%
+  filter(outcomes == "Visited a Health Care Provider") %>%
+ count(year, name = "Provider_visits") %>%
+  arrange(desc(Provider_visits))
+
+provider_1
+
+```
+```{r question 7 plotting after ranking}
+ggplot(provider_1, aes(x = reorder(as.factor(year), Provider_visits), y = Provider_visits)) + 
+  geom_col(fill = "red") + 
+  labs(
+    title = "Healthcare Provider Visit Outcomes By Year",
+    x = "Year",
+    y = "Number of Events" 
+    
+  ) + 
+  theme_dark()
+
+
+```
+
+
+## 8. Which product had the most adverse events of all time? How many adverse events were associated with this product? 
 
 # Submitting your work
 
