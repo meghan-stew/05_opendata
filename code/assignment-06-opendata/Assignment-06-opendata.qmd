@@ -257,6 +257,7 @@ provider_1
 
 ```
 ```{r question 7 plotting after ranking}
+#| warning: false
 ggplot(provider_1, aes(x = reorder(as.factor(year), Provider_visits), y = Provider_visits)) + 
   geom_col(fill = "red") + 
   labs(
@@ -274,6 +275,7 @@ ggplot(provider_1, aes(x = reorder(as.factor(year), Provider_visits), y = Provid
 ## 8. Which product had the most adverse events of all time? How many adverse events were associated with this product? 
 
 ```{r max adverse events}
+#| warning: false
 #let me use the dataset i made earlier already listing the total number of adverse events per product
 product_events
 
@@ -284,6 +286,12 @@ filter(Events_by_Product == max(Events_by_Product, na.rm = TRUE)) %>%
 worst_product
 ```
 ***The product with the most adverse events within the nut product industry was JIF Peanut Butter with 28 reported events between 2004-2023. ***
+
+
+Sources used: https://stackoverflow.com/questions/64883971/r-return-column-name-for-row-where-first-given-value-is-found, Perplexity Best Model using the following sources: https://dplyr.tidyverse.org/reference/index.html, https://ggplot2.tidyverse.org/reference/, https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2, https://aosmith.rbind.io/2018/08/20/automating-exploratory-plots/, https://www.geeksforgeeks.org/r-language/apply-lapply-sapply-and-tapply-in-r/, https://rfortherestofus.com/2023/11/pivot-functions, 
+
+**Personal Feedback: I found the question-making part of this exercise really  helpful for thinking about how I would set up the code and what functions I know I would want to use. The biggest struggle in completing this exercise was figuring out aspects of ggplot which wouldn't work if I changed my window size, etc. I also found navigating the open-source data difficult and had to research a lot of tutorials for wrangling the data in the format it came in. **
+
 
 # Submitting your work
 
