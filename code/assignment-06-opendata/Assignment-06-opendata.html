@@ -2367,8 +2367,21 @@ handle          1  curl_handle externalptr</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nutella2 <span class="ot">&lt;-</span> nutella1 <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(products, <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span> )</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#head(nutella2)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(nutella2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 7
+  date_created outcomes        reactions       products_role products_name_brand
+  &lt;chr&gt;        &lt;chr&gt;           &lt;chr&gt;             &lt;list&lt;chr&gt;&gt;         &lt;list&lt;chr&gt;&gt;
+1 20090331     Hospitalization ATRIOVENTRICUL…           [1]                 [1]
+2 20090331     Hospitalization Adverse reacti…           [1]                 [1]
+3 20090331     Hospitalization FEELING OF BOD…           [1]                 [1]
+4 20090331     Hospitalization INFLUENZA LIKE…           [1]                 [1]
+5 20090331     Hospitalization NAUSEA                    [1]                 [1]
+6 20090331     Hospitalization VOMITING                  [1]                 [1]
+# ℹ 2 more variables: products_industry_code &lt;list&lt;chr&gt;&gt;,
+#   products_industry_name &lt;list&lt;chr&gt;&gt;</code></pre>
+</div>
 </div>
 </section>
 <section id="how-many-adverse-events-for-nut-products-were-reported-each-year-between-the-years-of-2004-2023-summarize-findings-in-a-bar-chart-showing-total-events-per-year." class="level2" data-number="3.4">
@@ -2376,24 +2389,37 @@ handle          1  curl_handle externalptr</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nutella_year <span class="ot">&lt;-</span> nutella2 <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(date_created, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;month_day&quot;</span>), <span class="at">sep =</span> <span class="dv">4</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#nutella_year</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>nutella_year2 <span class="ot">&lt;-</span> nutella_year <span class="sc">%&gt;%</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(month_day, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;month&quot;</span>, <span class="st">&quot;day&quot;</span>), <span class="at">sep =</span> <span class="dv">2</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">view</span>(nutella_year2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nutella_year <span class="ot">&lt;-</span> nutella2 <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(date_created, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;month_day&quot;</span>), <span class="at">sep =</span> <span class="dv">4</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#nutella_year</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>nutella_year2 <span class="ot">&lt;-</span> nutella_year <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(month_day, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;month&quot;</span>, <span class="st">&quot;day&quot;</span>), <span class="at">sep =</span> <span class="dv">2</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(nutella_year2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 389
+Columns: 9
+$ year                   &lt;chr&gt; &quot;2009&quot;, &quot;2009&quot;, &quot;2009&quot;, &quot;2009&quot;, &quot;2009&quot;, &quot;2009&quot;,…
+$ month                  &lt;chr&gt; &quot;03&quot;, &quot;03&quot;, &quot;03&quot;, &quot;03&quot;, &quot;03&quot;, &quot;03&quot;, &quot;03&quot;, &quot;03&quot;,…
+$ day                    &lt;chr&gt; &quot;31&quot;, &quot;31&quot;, &quot;31&quot;, &quot;31&quot;, &quot;31&quot;, &quot;31&quot;, &quot;31&quot;, &quot;31&quot;,…
+$ outcomes               &lt;chr&gt; &quot;Hospitalization&quot;, &quot;Hospitalization&quot;, &quot;Hospital…
+$ reactions              &lt;chr&gt; &quot;ATRIOVENTRICULAR BLOCK&quot;, &quot;Adverse reaction&quot;, &quot;…
+$ products_role          &lt;list&lt;chr&gt;&gt; &quot;SUSPECT&quot;, &quot;SUSPECT&quot;, &quot;SUSPECT&quot;, &quot;SUSPECT…
+$ products_name_brand    &lt;list&lt;chr&gt;&gt; &quot;SUNKIST PISTACHIOS IN SHELL&quot;, &quot;SUNKIST P…
+$ products_industry_code &lt;list&lt;chr&gt;&gt; &quot;23&quot;, &quot;23&quot;, &quot;23&quot;, &quot;23&quot;, &quot;23&quot;, &quot;23&quot;, &quot;23&quot;,…
+$ products_industry_name &lt;list&lt;chr&gt;&gt; &quot;Nuts/Edible Seed&quot;, &quot;Nuts/Edible Seed&quot;, &quot;…</code></pre>
+</div>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>year_nutsum <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(year, <span class="at">name =</span> <span class="st">&quot;total_events&quot;</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>year_nutsum</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>year_nutsum <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(year, <span class="at">name =</span> <span class="st">&quot;total_events&quot;</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>year_nutsum</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 18 × 2
@@ -2421,13 +2447,13 @@ handle          1  curl_handle externalptr</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(year_nutsum, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> total_events)) <span class="sc">+</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;forestgreen&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Adverse Events for Nut Products in U.S. by Year&quot;</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Total Adverse Events&quot;</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span> </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(year_nutsum, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> total_events)) <span class="sc">+</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;forestgreen&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Adverse Events for Nut Products in U.S. by Year&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Total Adverse Events&quot;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2444,29 +2470,29 @@ handle          1  curl_handle externalptr</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>product_events <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year, products_name_brand, <span class="at">name =</span> <span class="st">&quot;Events_by_Product&quot;</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>product_events<span class="sc">$</span>products_name_brand[[<span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>product_events <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year, products_name_brand, <span class="at">name =</span> <span class="st">&quot;Events_by_Product&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>product_events<span class="sc">$</span>products_name_brand[[<span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] &quot;TRADER JOE&#39;S ORGANIC PEANUT BUTTER&quot;</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(product_events<span class="sc">$</span>products_name_brand[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(product_events<span class="sc">$</span>products_name_brand[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#so trying to run below chunk for mapping didn&#39;t work with this column being the character type it is so I have to convert it below. It&#39;s a list so maybe I can apply a functoin that works over a list like lapply or sapply : use paste() for joining list elements to create one name for each row and then adding a &quot;_&quot; to join names separated originally in the list. </span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>product_events <span class="ot">&lt;-</span> product_events <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">products_name_brand =</span> <span class="fu">sapply</span>(products_name_brand, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">&quot;_&quot;</span> )))</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>product_events</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#so trying to run below chunk for mapping didn&#39;t work with this column being the character type it is so I have to convert it below. It&#39;s a list so maybe I can apply a functoin that works over a list like lapply or sapply : use paste() for joining list elements to create one name for each row and then adding a &quot;_&quot; to join names separated originally in the list. </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>product_events <span class="ot">&lt;-</span> product_events <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">products_name_brand =</span> <span class="fu">sapply</span>(products_name_brand, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">&quot;_&quot;</span> )))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>product_events</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 84 × 3
@@ -2488,27 +2514,27 @@ handle          1  curl_handle externalptr</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>year_of_nutella <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(product_events<span class="sc">$</span>year))</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>nut_plots <span class="ot">&lt;-</span> <span class="fu">map</span>(year_of_nutella, <span class="sc">~</span> {nutty_year <span class="ot">&lt;-</span> product_events <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> .x)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nutty_year, <span class="fu">aes</span>(<span class="at">x =</span> products_name_brand, <span class="at">y =</span> Events_by_Product, <span class="at">fill =</span> products_name_brand)) <span class="sc">+</span> </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">&quot;Adverse Events By Nut Product &quot;</span>, .x),</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Nut Product&quot;</span>, </span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Total Adverse Events&quot;</span>) <span class="sc">+</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#adding next line because when I previewed plots you the x-axis labels were overlapping too much to read: </span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(nut_plots) <span class="ot">&lt;-</span> year_of_nutella</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>nut_plots<span class="sc">$</span><span class="st">`</span><span class="at">2010</span><span class="st">`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>year_of_nutella <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(product_events<span class="sc">$</span>year))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>nut_plots <span class="ot">&lt;-</span> <span class="fu">map</span>(year_of_nutella, <span class="sc">~</span> {nutty_year <span class="ot">&lt;-</span> product_events <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> .x)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nutty_year, <span class="fu">aes</span>(<span class="at">x =</span> products_name_brand, <span class="at">y =</span> Events_by_Product, <span class="at">fill =</span> products_name_brand)) <span class="sc">+</span> </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">&quot;Adverse Events By Nut Product &quot;</span>, .x),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Nut Product&quot;</span>, </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Total Adverse Events&quot;</span>) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#adding next line because when I previewed plots you the x-axis labels were overlapping too much to read: </span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(nut_plots) <span class="ot">&lt;-</span> year_of_nutella</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>nut_plots<span class="sc">$</span><span class="st">`</span><span class="at">2010</span><span class="st">`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2519,7 +2545,7 @@ handle          1  curl_handle externalptr</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#omg it actually worked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#omg it actually worked</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -2529,185 +2555,62 @@ handle          1  curl_handle externalptr</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>product_outcome <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">products_name_brand =</span> <span class="fu">sapply</span>(products_name_brand, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">&quot;_&quot;</span> ))) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(products_name_brand, outcomes, <span class="at">name =</span> <span class="st">&quot;Net_outcomes&quot;</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>product_outcome</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 103 × 3
-   products_name_brand                      outcomes                Net_outcomes
-   &lt;chr&gt;                                    &lt;chr&gt;                          &lt;int&gt;
- 1 365 EVERYDAY VALUE PINE NUTS             Other Outcome                      2
- 2 ADAM&#39;S 100% NATURAL CREAMY PEANUT BUTTER Other Outcome                      1
- 3 AMPORT FOODS PINE NUTS                   Other Outcome                      4
- 4 AMPORT FOODS PINE NUTS RAW               Other Outcome                      2
- 5 ARCHER FARMS MIXED NUTS                  Hospitalization                    6
- 6 ARCHER FARMS MIXED NUTS                  Required Intervention              6
- 7 ARCHER FARMS MIXED NUTS                  Visited Emergency Room             6
- 8 ARCHER FARMS MIXED NUTS                  Visited a Health Care …            6
- 9 ATLANTIC SPICE COMPANY PINE NUTS         Other Outcome                      1
-10 Almonds                                  Other Serious Outcome              2
-# ℹ 93 more rows</code></pre>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#adding below mod because of issues rendering plots</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#will use split() function here instead of filter() like previously to split dataframe based on grouping variable &quot;outcome&quot;. Then I&#39;ll try to use mapping like I did before. </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>product_outcome <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">products_name_brand =</span> <span class="fu">sapply</span>(products_name_brand, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse =</span> <span class="st">&quot;_&quot;</span> ))) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(products_name_brand, outcomes, <span class="at">name =</span> <span class="st">&quot;Net_outcomes&quot;</span>)</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>outcome_plots <span class="ot">&lt;-</span> <span class="fu">split</span>(product_outcome, product_outcome<span class="sc">$</span>outcomes)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>outcome_plots</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(product_outcome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>$`Allergic Reaction`
-# A tibble: 1 × 3
-  products_name_brand outcomes          Net_outcomes
-  &lt;chr&gt;               &lt;chr&gt;                    &lt;int&gt;
-1 JIF PEANUT BUTTER   Allergic Reaction            4
-
-$Disability
-# A tibble: 2 × 3
-  products_name_brand                          outcomes   Net_outcomes
-  &lt;chr&gt;                                        &lt;chr&gt;             &lt;int&gt;
-1 JIF CREAMY PEANUT BUTTER                     Disability           11
-2 JIF CREAMY PEANUT BUTTER_Daily Multi vitamin Disability            4
-
-$Hospitalization
-# A tibble: 4 × 3
-  products_name_brand                       outcomes        Net_outcomes
-  &lt;chr&gt;                                     &lt;chr&gt;                  &lt;int&gt;
-1 ARCHER FARMS MIXED NUTS                   Hospitalization            6
-2 JIF CREAMY PEANUT BUTTER                  Hospitalization            5
-3 PETER PAN PETER PAN CRUNCHY PEANUT BUTTER Hospitalization            7
-4 SUNKIST PISTACHIOS IN SHELL               Hospitalization            6
-
-$`Life Threatening`
-# A tibble: 1 × 3
-  products_name_brand      outcomes         Net_outcomes
-  &lt;chr&gt;                    &lt;chr&gt;                   &lt;int&gt;
-1 JIF CREAMY PEANUT BUTTER Life Threatening            5
-
-$`Other Outcome`
-# A tibble: 47 × 3
-   products_name_brand                                   outcomes   Net_outcomes
-   &lt;chr&gt;                                                 &lt;chr&gt;             &lt;int&gt;
- 1 365 EVERYDAY VALUE PINE NUTS                          Other Out…            2
- 2 ADAM&#39;S 100% NATURAL CREAMY PEANUT BUTTER              Other Out…            1
- 3 AMPORT FOODS PINE NUTS                                Other Out…            4
- 4 AMPORT FOODS PINE NUTS RAW                            Other Out…            2
- 5 ATLANTIC SPICE COMPANY PINE NUTS                      Other Out…            1
- 6 BIKAJI NUT CRACKERS                                   Other Out…            3
- 7 BULK BIN PINE NUTS                                    Other Out…            3
- 8 CAJUN CREOLE HOT PEANUTS                              Other Out…            4
- 9 CASTELLA VANILLA FLAVOR (ARTIFICIAL)_ALMONDS_COCONUTS Other Out…            1
-10 CORA PINE NUTS RAW                                    Other Out…            2
-# ℹ 37 more rows
-
-$`Other Serious or Important Medical Event`
-# A tibble: 19 × 3
-   products_name_brand                                     outcomes Net_outcomes
-   &lt;chr&gt;                                                   &lt;chr&gt;           &lt;int&gt;
- 1 HONEY &amp; VANILLA FLAVORED NUT &amp; FRUIT CLUSTERS           Other S…            1
- 2 JIF CREAMY PEANUT BUTTER                                Other S…            9
- 3 JIF CREAMY PEANUT BUTTER_JIF CRUNCHY PEANUT BUTTER_PRO… Other S…            1
- 4 JIF CRUNCHY PEANUT BUTTER                               Other S…            5
- 5 JIF NATURAL CREAMY PEANUT BUTTER                        Other S…            1
- 6 JIF NATURAL CREAMY PEANUT BUTTER_Banana_Prenatal_iron … Other S…            4
- 7 JIF NATURAL HONEY                                       Other S…            4
- 8 JIF NATURAL PEANUT BUTTER                               Other S…            4
- 9 JIF PEANUT BUTTER                                       Other S…           19
-10 JIF PEANUT BUTTER TO GO                                 Other S…            2
-11 JIF PEANUT BUTTER_multivitamin_probiotic                Other S…            2
-12 Multivitamin_Vitamin C_Vitamin D_JIF NATURAL CREAMY PE… Other S…            2
-13 NATURAL JIF CREAMY PEANUT BUTTER_Pepto Bismol           Other S…            4
-14 NATURE&#39;S GARDEN PROBIOTIC MEGA IMMUNE MIX NUT SNACK PA… Other S…            7
-15 PLANTERS LIGHTLY SALTED MIXED NUTS                      Other S…            1
-16 PLANTERS PEANUTS                                        Other S…            6
-17 SALBA CHIA SEED                                         Other S…            2
-18 SOUTHERN GROVE PISTACHIOS_SOUTHERN GROVE PISTACHIOS RO… Other S…            8
-19 SOUTHERN STYLE HUNTER MIX GOURMET NUTS                  Other S…            2
-
-$`Other Serious Outcome`
-# A tibble: 7 × 3
-  products_name_brand                                      outcomes Net_outcomes
-  &lt;chr&gt;                                                    &lt;chr&gt;           &lt;int&gt;
-1 Almonds                                                  Other S…            2
-2 GREAT VALUE CREAMY PEANUT BUTTER                         Other S…            4
-3 JIF CREAMY PEANUT BUTTER                                 Other S…            9
-4 JIF NATURAL CREAMY PEANUT BUTTER_elderberry_multi vitam… Other S…            6
-5 JIF NATURAL CRUNCHY PEANUT BUTTER                        Other S…           11
-6 JIF NATURAL HONEY                                        Other S…            4
-7 JIF PEANUT BUTTER                                        Other S…            9
-
-$`Required Intervention`
-# A tibble: 3 × 3
-  products_name_brand         outcomes              Net_outcomes
-  &lt;chr&gt;                       &lt;chr&gt;                        &lt;int&gt;
-1 ARCHER FARMS MIXED NUTS     Required Intervention            6
-2 FISHER CREAMY PEANUT BUTTER Required Intervention            5
-3 SUNKIST PISTACHIOS IN SHELL Required Intervention            6
-
-$`Visited a Health Care Provider`
-# A tibble: 11 × 3
-   products_name_brand                       outcomes               Net_outcomes
-   &lt;chr&gt;                                     &lt;chr&gt;                         &lt;int&gt;
- 1 ARCHER FARMS MIXED NUTS                   Visited a Health Care…            6
- 2 FISHER CREAMY PEANUT BUTTER               Visited a Health Care…            5
- 3 GREAT VALUE CAJUN TRAIL MIX               Visited a Health Care…            4
- 4 JIF CREAMY PEANUT BUTTER                  Visited a Health Care…            8
- 5 NUTELLA FERERRO CHOCOLATE HAZELNUT SPREAD Visited a Health Care…            7
- 6 PETER PAN PETER PAN CRUNCHY PEANUT BUTTER Visited a Health Care…            7
- 7 PLANTERS PEANUTS                          Visited a Health Care…            6
- 8 QUINOA                                    Visited a Health Care…            1
- 9 SMUCKERS NATURAL CRUNCHY PEANUT BUTTER    Visited a Health Care…            1
-10 SUNKIST PISTACHIOS IN SHELL               Visited a Health Care…            6
-11 TRADER JOE&#39;S RAW PEELED PINENUTS          Visited a Health Care…            1
-
-$`Visited Emergency Room`
-# A tibble: 8 × 3
-  products_name_brand                                      outcomes Net_outcomes
-  &lt;chr&gt;                                                    &lt;chr&gt;           &lt;int&gt;
-1 ARCHER FARMS MIXED NUTS                                  Visited…            6
-2 DIAMOND WALNUTS IN SHELL                                 Visited…            7
-3 JIF CRUNCHY PEANUT BUTTER                                Visited…            5
-4 JIF NATURAL CREAMY PEANUT BUTTER_elderberry_multi vitam… Visited…            6
-5 NUTELLA FERERRO CHOCOLATE HAZELNUT SPREAD                Visited…            7
-6 PETER PAN CREAMY PEANUT BUTTER                           Visited…            4
-7 SKIPPY PEANUT BUTTER                                     Visited…            3
-8 SUNKIST PISTACHIOS IN SHELL                              Visited…            6</code></pre>
+<pre><code># A tibble: 6 × 3
+  products_name_brand                      outcomes              Net_outcomes
+  &lt;chr&gt;                                    &lt;chr&gt;                        &lt;int&gt;
+1 365 EVERYDAY VALUE PINE NUTS             Other Outcome                    2
+2 ADAM&#39;S 100% NATURAL CREAMY PEANUT BUTTER Other Outcome                    1
+3 AMPORT FOODS PINE NUTS                   Other Outcome                    4
+4 AMPORT FOODS PINE NUTS RAW               Other Outcome                    2
+5 ARCHER FARMS MIXED NUTS                  Hospitalization                  6
+6 ARCHER FARMS MIXED NUTS                  Required Intervention            6</code></pre>
 </div>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note for meghan: .x in function() below is a placeholder for each data frame that was split by outcome in previous chunk. </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#adding below mod because of issues rendering plots</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>nut_plot3 <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  outcome_plots, </span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(.x) {nut_outcome <span class="ot">&lt;-</span> <span class="fu">unique</span>(.x<span class="sc">$</span>outcomes)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.x, <span class="fu">aes</span>(<span class="at">x =</span> products_name_brand, </span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> Net_outcomes)) <span class="sc">+</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;purple&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#had to add bottom part because titles kept being cut off in test plots </span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>   <span class="co"># coord_flip(clip = &quot;off&quot;) + </span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#above didn&#39;t work so I just turned the flip off. </span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>( <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">&quot;Products Associated with Certain Adverse Outcomes:&quot;</span>, nut_outcome),</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;Product Name&quot;</span>,</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;Total Outcome Events&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>),</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">76</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">80</span>, <span class="at">r =</span> <span class="dv">80</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">l =</span> <span class="dv">20</span>))</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>nut_plot3<span class="sc">$</span>Hospitalization</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#will use split() function here instead of filter() like previously to split dataframe based on grouping variable &quot;outcome&quot;. Then I&#39;ll try to use mapping like I did before. </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>outcome_plots <span class="ot">&lt;-</span> <span class="fu">split</span>(product_outcome, product_outcome<span class="sc">$</span>outcomes)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#head(outcome_plots)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># note for meghan: .x in function() below is a placeholder for each data frame that was split by outcome in previous chunk. </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>nut_plot3 <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  outcome_plots, </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(.x) {nut_outcome <span class="ot">&lt;-</span> <span class="fu">unique</span>(.x<span class="sc">$</span>outcomes)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.x, <span class="fu">aes</span>(<span class="at">x =</span> products_name_brand, </span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> Net_outcomes)) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;purple&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#had to add bottom part because titles kept being cut off in test plots </span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>   <span class="co"># coord_flip(clip = &quot;off&quot;) + </span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#above didn&#39;t work so I just turned the flip off. </span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>( <span class="at">title =</span> <span class="fu">paste</span>(<span class="st">&quot;Products Associated with Certain Adverse Outcomes:&quot;</span>, nut_outcome),</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">x =</span> <span class="st">&quot;Product Name&quot;</span>,</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">y =</span> <span class="st">&quot;Total Outcome Events&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">5</span>),</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">76</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">80</span>, <span class="at">r =</span> <span class="dv">80</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">l =</span> <span class="dv">20</span>))</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>nut_plot3<span class="sc">$</span>Hospitalization</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2724,12 +2627,12 @@ $`Visited Emergency Room`
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>provider_1 <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(outcomes <span class="sc">==</span> <span class="st">&quot;Visited a Health Care Provider&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">count</span>(year, <span class="at">name =</span> <span class="st">&quot;Provider_visits&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Provider_visits))</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>provider_1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>provider_1 <span class="ot">&lt;-</span> nutella_year2 <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(outcomes <span class="sc">==</span> <span class="st">&quot;Visited a Health Care Provider&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">count</span>(year, <span class="at">name =</span> <span class="st">&quot;Provider_visits&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Provider_visits))</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>provider_1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 2
@@ -2748,15 +2651,15 @@ $`Visited Emergency Room`
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(provider_1, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="fu">as.factor</span>(year), Provider_visits), <span class="at">y =</span> Provider_visits)) <span class="sc">+</span> </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Healthcare Provider Visit Outcomes By Year&quot;</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Number of Events&quot;</span> </span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dark</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(provider_1, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="fu">as.factor</span>(year), Provider_visits), <span class="at">y =</span> Provider_visits)) <span class="sc">+</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Healthcare Provider Visit Outcomes By Year&quot;</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Number of Events&quot;</span> </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dark</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2772,8 +2675,8 @@ $`Visited Emergency Room`
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#let me use the dataset i made earlier already listing the total number of adverse events per product</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>product_events</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#let me use the dataset i made earlier already listing the total number of adverse events per product</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>product_events</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 84 × 3
@@ -2793,11 +2696,11 @@ $`Visited Emergency Room`
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>worst_product <span class="ot">&lt;-</span> product_events <span class="sc">%&gt;%</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Events_by_Product <span class="sc">==</span> <span class="fu">max</span>(Events_by_Product, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(products_name_brand, Events_by_Product)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>worst_product</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>worst_product <span class="ot">&lt;-</span> product_events <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Events_by_Product <span class="sc">==</span> <span class="fu">max</span>(Events_by_Product, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(products_name_brand, Events_by_Product)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>worst_product</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 28 

@@ -201,7 +201,7 @@ product_outcome <- nutella_year2 %>%
   mutate(products_name_brand = sapply(products_name_brand, function(x) paste(x, collapse = "_" ))) %>%
   count(products_name_brand, outcomes, name = "Net_outcomes")
 
-product_outcome
+head(product_outcome)
 
 ```
 
@@ -212,7 +212,7 @@ product_outcome
 #will use split() function here instead of filter() like previously to split dataframe based on grouping variable "outcome". Then I'll try to use mapping like I did before. 
 
 outcome_plots <- split(product_outcome, product_outcome$outcomes)
-outcome_plots
+#head(outcome_plots)
 
 ```
 
